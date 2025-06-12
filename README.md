@@ -1,7 +1,5 @@
 # Tastegy
 
-Link to project available on <a href="https://tastegy-deliciousrecipes.onrender.com/">https://tastegy-deliciousrecipes.onrender.com/</a>
-
 ## About
 Tastegy is a web application designed for sharing and discovering recipes. 
 
