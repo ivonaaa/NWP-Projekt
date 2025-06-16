@@ -46,18 +46,20 @@ const Profile = () => {
             <div className='userDetails'>
                 <h2>My Profile</h2>
                 <p>Email: {user?.email}</p>
-                <h3>My Recipes: </h3>
-                {recipes.length > 0 ? (
-                    <div>
-                        <div className="recipes-grid">
-                            {recipes.map((recipe) => (
-                                <RecipeDetails key={recipe._id} recipe={recipe} />
-                            ))}
+                <div className="my-recipes-section">
+                    <h3>My Recipes: </h3>
+                    {recipes.length > 0 ? (
+                        <div>
+                            <div className="recipes-grid">
+                                {recipes.map((recipe) => (
+                                    <RecipeDetails key={recipe._id} recipe={recipe} />
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    <p>Haven't posted any recipes yet.</p>
-                )}
+                    ) : (
+                        <p className='white'>Haven't posted any recipes yet.</p>
+                    )}
+                </div>
             </div>
             <div className='userRecipeInfo'>
                 <div className='addRecipe'>
@@ -70,18 +72,20 @@ const Profile = () => {
                         </div>
                     </Link>
                 </div>
-                <h3>Rated Recipes: </h3>
-                {ratedRecipes.length > 0 ? (
-                    <div>
-                        <div className="recipes-grid-rated">
-                            {ratedRecipes.map((recipe) => (
-                                <RecipeDetails key={recipe._id} recipe={recipe} />
-                            ))}
+                <div className="rated-recipes-section">
+                    <h3>Rated Recipes: </h3>
+                    {ratedRecipes.length > 0 ? (
+                        <div>
+                            <div className="recipes-grid-rated">
+                                {ratedRecipes.map((recipe) => (
+                                    <RecipeDetails key={recipe._id} recipe={recipe} />
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    <p>Haven't rated any recipes yet.</p>
-                )}
+                    ) : (
+                        <p className='white'>Haven't rated any recipes yet.</p>
+                    )}
+                </div>
             </div>
         </div>
     );

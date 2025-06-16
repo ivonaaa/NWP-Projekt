@@ -26,6 +26,10 @@ const recipeSchema = new Schema({
         type: String,
         required: true
     },
+    imageUrl: {
+        type: String,
+        required: false  
+    },    
     ingredients: [ingredientSchema],
     user_id: {
         type: Schema.Types.ObjectId,

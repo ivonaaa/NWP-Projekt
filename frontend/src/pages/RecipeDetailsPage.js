@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
@@ -12,6 +12,7 @@ const RecipeDetailsPage = () => {
     const [newComment, setNewComment] = useState('');
     const [overallRating, setOverallRating] = useState(0);
     const [userRating, setUserRating] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRecipe = async () => {
@@ -126,7 +127,7 @@ const RecipeDetailsPage = () => {
         }
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/UserRecipes/${id}/rate`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/userRecipes/${id}/rate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -165,6 +166,45 @@ const RecipeDetailsPage = () => {
         }
     };
 
+    const handleDeleteRecipe = async () => {
+        if (!user) {
+            console.error('User is not authenticated');
+            return;
+        }
+    
+        const confirmed = window.confirm('Are you sure you want to delete this recipe?');
+        if (!confirmed) return;
+    
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/userRecipes/${recipe._id}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            });
+    
+            const json = await response.json();
+    
+            if (response.ok) {
+                alert('Recipe deleted');
+                window.location.href = '/';
+            } else {
+                throw new Error(json.error || 'Failed to delete recipe');
+            }
+        } catch (error) {
+            console.error('Error deleting recipe:', error);
+        }
+    };
+    
+    const handleEditRecipe = () => {
+        if (!user) {
+            console.error('User is not authenticated');
+            return;
+        }
+    
+        navigate(`/edit-recipe/${recipe._id}`);
+    };      
+
     return (
         <div className="recipe-details-page">
             {recipe ? (
@@ -183,22 +223,41 @@ const RecipeDetailsPage = () => {
                                 ))}
                             </div>
                         </div>
+                        {user && recipe?.user_id?.email === user.email && (
+                        <div className="recipe-actions">
+                            <button className="addbutton" onClick={handleEditRecipe} title="Edit">
+                            <span className="material-symbols-outlined">edit</span>
+                            </button>
+                            <button className="removebutton" onClick={handleDeleteRecipe} title="Delete">
+                            <span className="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                        )}
                     </div>
                     <small>
                         <Link to={handleEmailClick(recipe.user_id.email)} className="email-link" style={{cursor: 'pointer', textDecoration: 'underline'}}>
                             {recipe.user_id.email}
                         </Link>
                     </small>
-                    <h2>Ingredients</h2>
-                    <ul>
-                        {recipe.ingredients.map((ingredient, index) => (
-                            <li key={index}>
-                                {ingredient.quantity} {ingredient.unit} {ingredient.name}
-                            </li>
-                        ))}
-                    </ul>
-                    <h2>How to guide: </h2>
-                    <p>{recipe.description}</p>
+                    <div className="card">
+                        {recipe.imageUrl && (
+                            <img 
+                                src={recipe.imageUrl} 
+                                alt={recipe.title} 
+                                className="recipe-banner"
+                            />
+                        )}
+                        <h2>Ingredients</h2>
+                        <ul>
+                            {recipe.ingredients.map((ingredient, index) => (
+                                <li key={index}>
+                                    {ingredient.quantity} {ingredient.unit} {ingredient.name}
+                                </li>
+                            ))}
+                        </ul>
+                        <h2>How to guide: </h2>
+                        <p>{recipe.description}</p>
+                    </div>
                 </div>
             ) : (
                 <p>Loading...</p>
@@ -209,16 +268,18 @@ const RecipeDetailsPage = () => {
                     <div className='review'>
                         <div className="addComment">
                             <p>Add a comment:</p>
-                            <form onSubmit={handleSubmitComment}>
-                                <textarea
-                                    id="new-comment"
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                    required
-                                />
-                                <button type="submit">
-                                    <span className="material-symbols-outlined">send</span>
-                                </button>
+                            <form onSubmit={handleSubmitComment} className="comment-form">
+                                <div className="comment-input-wrapper">
+                                    <textarea
+                                        id="new-comment"
+                                        value={newComment}
+                                        onChange={(e) => setNewComment(e.target.value)}
+                                        required
+                                    />
+                                    <button type="submit">
+                                        <span className="material-symbols-outlined">send</span>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     

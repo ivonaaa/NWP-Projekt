@@ -92,15 +92,6 @@ const Home = () => {
                         onChange={handleSearchChange} 
                     />
                 </div>
-                <div className="recipes">
-                    {currentRecipes.length > 0 ? (
-                        currentRecipes.map((recipe) => (
-                            <RecipeDetails key={recipe._id} recipe={recipe} />
-                        ))
-                    ) : (
-                        <p>No recipes found</p>
-                    )}
-                </div>
                 <div className="pagination">
                     <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>Previous</button>
                     {[...Array(totalPages)].map((_, index) => (
@@ -109,6 +100,17 @@ const Home = () => {
                         </button>
                     ))}
                     <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>Next</button>
+                </div>
+                <div className="recipes-container">
+                    <div className="recipes">
+                        {currentRecipes.length > 0 ? (
+                        currentRecipes.map((recipe) => (
+                            <RecipeDetails key={recipe._id} recipe={recipe} />
+                        ))
+                        ) : (
+                        <p>No recipes found</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

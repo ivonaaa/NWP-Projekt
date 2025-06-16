@@ -28,6 +28,10 @@ function App() {
               element = { user ? <RecipeForm /> : <Navigate to="/login" />}
             />
             <Route 
+              path='/edit-recipe/:id'
+              element={user ? <RecipeForm isEdit={true} /> : <Navigate to="/login" />}
+            />
+            <Route 
               path='/login'
               element = { !user ? <Login /> : <Navigate to="/" />}
             />
